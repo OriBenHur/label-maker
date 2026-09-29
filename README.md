@@ -1,14 +1,79 @@
-# Label maker
+<!-- github-only -->
+<div align="center">
+
+<h1>Label maker</h1>
+
+<p>
+  <img alt="Python 3.10 or newer" src="https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white">
+  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-f5c518">
+  <img alt="Pictures are placed at 300 dpi" src="https://img.shields.io/badge/print-300%20dpi-222222">
+</p>
+
+<p>Text and pictures, on a sheet of stickers.</p>
+
+<p>
+  <a href="#quick-start">Quick start</a>
+  &nbsp;·&nbsp;
+  <a href="#install">Install</a>
+  &nbsp;·&nbsp;
+  <a href="#sheets">Sheets</a>
+  &nbsp;·&nbsp;
+  <a href="#printer-calibration">Calibrate</a>
+  &nbsp;·&nbsp;
+  <a href="#text">Text</a>
+  &nbsp;·&nbsp;
+  <a href="#pictures">Pictures</a>
+  &nbsp;·&nbsp;
+  <a href="#switches">Switches</a>
+  &nbsp;·&nbsp;
+  <a href="#license">License</a>
+</p>
+
+</div>
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="labels/preview/combo.pdf.png" alt="Logos beside, above, and on both sides of the words" width="280"><br>
+      <sub>Logo and words</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="labels/preview/proof.pdf.png" alt="A proof sheet with borders, a ruler, and millimetre scales" width="280"><br>
+      <sub>Proof and scale</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="labels/preview/image.pdf.png" alt="A sheet of fan and flower pictures" width="280"><br>
+      <sub>Pictures</sub>
+    </td>
+    <td align="center">
+      <img src="labels/preview/color.pdf.png" alt="Eight stickers, each printed in the colour of its name" width="280"><br>
+      <sub>Colours</sub>
+    </td>
+  </tr>
+</table>
+
+<!-- /github-only -->
 
 Print text and pictures on a sheet of stickers.  
 The default sheet is 110×152 mm, two columns and four rows of 52×34 mm labels.
 
 Text and SVG drawings are vectors.  
-Photos and other pictures are placed at 300 dpi.  
-A picture with a flat margin is trimmed to the artwork.
+Photos and other pictures are placed at 300 dpi, and a picture with a flat margin is trimmed to the artwork.
 
 `--help` prints the short option list.  
 `--man` opens this manual.
+
+## Quick start
+
+```bash
+pipx install .
+make-labels
+```
+
+That writes `labels.pdf` in the folder you ran it from.  
+The sheet alternates MASTER in green and SLAVE in red.
 
 ## Install
 
@@ -72,8 +137,7 @@ make-labels --page-w 210 --page-h 297 --cols 3 --rows 8 \
   --lw 63.5 --lh 33.9 --gap-x 2.5 --gap-y 0
 ```
 
-`--limit 4` prints only the first four stickers.  
-`--row 2` prints one row.  
+`--limit 4` prints only the first four stickers, and `--row 2` prints one row.  
 `--skip-row` and `--skip-col` leave a row or column blank.  
 If the grid does not fit the page, nothing is written unless you pass `--force`.
 
@@ -81,8 +145,7 @@ If the grid does not fit the page, nothing is written unless you pass `--force`.
 
 Printers do not always place a sheet at exactly the expected origin.  
 `--offset-x` and `--offset-y` correct that mechanical drift without changing the label size or spacing.  
-A positive `--offset-x` moves the grid right.  
-A positive `--offset-y` moves it down.  
+A positive `--offset-x` moves the grid right, and a positive `--offset-y` moves it down.  
 Negative values move it left or up.
 
 First print a proof on ordinary paper cut to the same dimensions as the sticker sheet:
@@ -91,15 +154,16 @@ First print a proof on ordinary paper cut to the same dimensions as the sticker 
 make-labels --proof --out calibration.pdf
 ```
 
-Place the print behind a sticker sheet and hold both against a light to compare the proof boxes with the stickers.  
+Place the print behind a sticker sheet and hold both against a light to compare the proof boxes with the stickers.
+
 Two stickers carry a millimetre scale.  
 On a sheet of four or more rows they are the second row and the second-to-last row, at opposite ends.  
 The first and last rows stay plain, because many printers cannot print the edge of the page.  
 On a shorter sheet the ticks sit on the side of the sticker that faces the middle of the page.  
-The shortest ticks mark half a millimetre.  
-The longer ticks are numbered in millimetres.  
+The shortest ticks mark half a millimetre, and the longer ticks are numbered in millimetres.  
 Read the number at the sticker edge.  
-That number is the offset.  
+That number is the offset.
+
 If the boxes are 2 mm too far left and 1 mm too high, move them right and down:
 
 ```bash
@@ -117,8 +181,7 @@ Follow the printer and sticker-sheet instructions for the correct tray, printabl
 
 The PDF page has the exact dimensions passed with `--page-w` and `--page-h`.  
 Create or select a paper size in the printer settings with those same dimensions.  
-For the default sheet, use 110×152 mm.  
-Choose the orientation that matches the PDF.
+For the default sheet, use 110×152 mm, and choose the orientation that matches the PDF.
 
 Print at Actual Size or 100%.  
 Turn off Fit, Shrink oversized pages, Scale to fit, and any automatic enlargement.  
@@ -128,8 +191,7 @@ Select the tray and media type recommended for the sticker sheet.
 Labels, Heavy Paper, or Cardstock settings may change the feed speed and temperature.  
 Turn off duplex printing and print only on the printable side of the sticker sheet.
 
-Print a proof on ordinary paper before using a sticker sheet.  
-Measure the printed 100 mm ruler with a physical ruler.  
+Print a proof on ordinary paper before using a sticker sheet, and measure the printed 100 mm ruler with a physical ruler.  
 If it is not exactly 100 mm, correct the printer scaling before changing either offset.  
 Offsets fix position, not size.
 
@@ -139,12 +201,16 @@ Use the same preset, tray, orientation, and feed direction for the calibration p
 ## Text
 
 Repeat `--text` once per sticker.  
-A real newline or the two characters `\n` starts another line.  
+A real newline inside `'''` or `"""` starts another line.  
+The two characters `\n` do the same thing.  
 Colors follow the text stickers in order.  
 Names (`green`, `red`, `blue`, and the others listed under `--color`) and `#rrggbb` both work.  
 Hebrew uses an embedded font.
 
 ```bash
+make-labels --text '''MASTER
+SAW''' --text """SLAVE
+VAC""" --color green --color red
 make-labels --text 'MASTER\nSAW' --text 'SLAVE\nVAC' --color green --color red
 make-labels --text 'מסור\nשואב' --color blue
 ```
@@ -166,20 +232,16 @@ A photograph stays embedded, because tracing it would not stay sharp.
 
 One sticker can hold a logo and text.  
 `--combo` uses the same sticker text as `--cell`, without the row and column.  
-`PATH|TEXT` puts the logo before the words.  
-`PATH TEXT` as two words means the same thing.  
+`PATH|TEXT` puts the logo before the words, and `PATH TEXT` as two words means the same thing.  
 A third field of `left`, `right`, or `top` is the layout.  
-Any other third field is a logo after the words.  
-A fourth field is the layout.  
-A colour name or `#rrggbb` after the last comma colours the words.  
+Any other third field is a logo after the words, and a fourth field is the layout.  
+A colour name or `#rrggbb` after the last comma colours the words.
+
 `--layout` is the default when that text does not name a layout.  
+`--layout left` puts the logo before the text, `--layout right` puts it after, and `--layout top` puts it above.  
 One `--layout top` puts the logo above the words on every such combo.  
 A combo that names an end logo keeps a logo on both sides.  
 Both logos match the text height and share its vertical center.
-
-`--layout left` puts the logo before the text.  
-`--layout right` puts it after the text.  
-`--layout top` puts it above the text.
 
 ```bash
 make-labels --combo logo.svg 'MASTER\nSAW'
@@ -209,7 +271,8 @@ make-labels --cell 1,1,@logo.png --cell 1,2,N,black
 ## Switches
 
 Sizes are millimetres.  
-Pass a repeatable switch again for another sticker.  
+Pass a repeatable switch again for another sticker.
+
 The last column links each switch to its sheet in `examples/`.  
 The sheets in `examples/` are drawn so the change is easy to see.  
 `--help`, `--man`, and `--completion` print text, so `examples/` has no sheet for them.
@@ -228,7 +291,7 @@ The sheets in `examples/` are drawn so the change is easy to see.
 | `-M`, `--margin-y` | centered | Top margin.<br>The column of stickers sits in the middle of the page.<br>`--offset-y` is applied after that. | `make-labels --margin-y 5`<br>[examples/margin-y.pdf](examples/margin-y.pdf) |
 | `-x`, `--offset-x` | 0 | Extra shift to the right, after the margin. | `make-labels --offset-x 1`<br>[examples/offset-x.pdf](examples/offset-x.pdf) |
 | `-y`, `--offset-y` | 0 | Extra shift down, after the margin.<br>A positive number moves the stickers down. | `make-labels --offset-y 10`<br>[examples/offset-y.pdf](examples/offset-y.pdf) |
-| `-T`, `--text` | MASTER, SLAVE | Words for one sticker.<br>Repeat it for the next sticker.<br>A real line break, or the two characters `\n`, starts a new line.<br>With no stickers chosen, the sheet alternates those two words, green then red. | `make-labels --text 'MASTER\nSAW' --text 'SLAVE\nVAC'`<br>[examples/text.pdf](examples/text.pdf) |
+| `-T`, `--text` | MASTER, SLAVE | Words for one sticker.<br>Repeat it for the next sticker.<br>A real line break inside `'''` or `"""`, or the two characters `\n`, starts a new line.<br>With no stickers chosen, the sheet alternates those two words, green then red. | `make-labels --text 'MASTER\nSAW' --text 'SLAVE\nVAC'`<br>[examples/text.pdf](examples/text.pdf) |
 | `-I`, `--image` | — | A picture for one sticker.<br>Repeat it for the next sticker.<br>SVG is drawn as vectors.<br>PNG, JPEG, GIF, WebP, BMP, TIFF, and AVIF are placed at 300 dpi. | `make-labels --image logo.svg`<br>[examples/image.pdf](examples/image.pdf) |
 | `--trace` | off | Outline a flat logo as vector paths.<br>A photograph stays an embedded picture, because a trace of it would not stay sharp. | `make-labels --image logo.png --trace`<br>[examples/trace.pdf](examples/trace.pdf) |
 | `--combo` `SPEC` | — | One sticker with a logo and words, using the same text as `--cell`.<br>`PATH\|TEXT` puts the logo before the words.<br>`PATH TEXT` as two words means the same thing.<br>A third field of `left`, `right`, or `top` is the layout.<br>Any other third field is a logo after the words.<br>A fourth field is the layout.<br>A colour after the last comma colours the words.<br>Repeat it for another sticker. | `make-labels --combo 'logo.svg\|MASTER\|mark.png\|top'`<br>[examples/combo.pdf](examples/combo.pdf) |

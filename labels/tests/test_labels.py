@@ -713,6 +713,10 @@ class LabelTests(unittest.TestCase):
         self.assertIn(".SH EXAMPLES", page)
         self.assertIn(r"make\-labels \-\-page\-w 210", page)
         self.assertNotIn("examples/", page)
+        self.assertNotIn("shields.io", page)
+        self.assertNotIn("preview/", page)
+        self.assertIn("labels/preview/combo.pdf.png", readme)
+        self.assertIn(".SH QUICK START", page)
         for pdf in (root / "examples").glob("*.pdf"):
             self.assertIn(f"examples/{pdf.name}", readme)
         for param in main.params:

@@ -13,6 +13,12 @@ def readme_path() -> Path:
 
 def man_page(markdown: str | None = None) -> str:
     text = readme_path().read_text() if markdown is None else markdown
+    text = re.sub(
+        r"<!--\s*github-only\s*-->.*?<!--\s*/github-only\s*-->\s*",
+        "",
+        text,
+        flags=re.S,
+    )
     lines = [
         '.TH MAKE-LABELS 1 "2026-09-30" "label-maker 0.1.0" "User Commands"',
         ".SH NAME",

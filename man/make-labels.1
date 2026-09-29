@@ -9,13 +9,22 @@ The default sheet is 110×152 mm, two columns and four rows of
 
 Text and SVG drawings are vectors.
 .br
-Photos and other pictures are placed at 300 dpi.
-.br
-A picture with a flat margin is trimmed to the artwork.
+Photos and other pictures are placed at 300 dpi, and a picture
+with a flat margin is trimmed to the artwork.
 
 \fB\-\-help\fR prints the short option list.
 .br
 \fB\-\-man\fR opens this manual.
+
+.SH QUICK START
+.nf
+pipx install .
+make\-labels
+.fi
+
+That writes \fBlabels.pdf\fR in the folder you ran it from.
+.br
+The sheet alternates MASTER in green and SLAVE in red.
 
 .SH INSTALL
 pipx keeps the tool in its own environment and puts
@@ -87,8 +96,7 @@ make\-labels \-\-page\-w 210 \-\-page\-h 297 \-\-cols 3 \-\-rows 8 \e
   \-\-lw 63.5 \-\-lh 33.9 \-\-gap\-x 2.5 \-\-gap\-y 0
 .fi
 
-\fB\-\-limit 4\fR prints only the first four stickers.
-.br
+\fB\-\-limit 4\fR prints only the first four stickers, and
 \fB\-\-row 2\fR prints one row.
 .br
 \fB\-\-skip\-row\fR and \fB\-\-skip\-col\fR leave a row or
@@ -104,9 +112,8 @@ origin.
 \fB\-\-offset\-x\fR and \fB\-\-offset\-y\fR correct that
 mechanical drift without changing the label size or spacing.
 .br
-A positive \fB\-\-offset\-x\fR moves the grid right.
-.br
-A positive \fB\-\-offset\-y\fR moves it down.
+A positive \fB\-\-offset\-x\fR moves the grid right, and a
+positive \fB\-\-offset\-y\fR moves it down.
 .br
 Negative values move it left or up.
 
@@ -119,7 +126,7 @@ make\-labels \-\-proof \-\-out calibration.pdf
 
 Place the print behind a sticker sheet and hold both against a
 light to compare the proof boxes with the stickers.
-.br
+
 Two stickers carry a millimetre scale.
 .br
 On a sheet of four or more rows they are the second row and the
@@ -131,14 +138,13 @@ print the edge of the page.
 On a shorter sheet the ticks sit on the side of the sticker that
 faces the middle of the page.
 .br
-The shortest ticks mark half a millimetre.
-.br
-The longer ticks are numbered in millimetres.
+The shortest ticks mark half a millimetre, and the longer ticks
+are numbered in millimetres.
 .br
 Read the number at the sticker edge.
 .br
 That number is the offset.
-.br
+
 If the boxes are 2 mm too far left and 1 mm too high, move them
 right and down:
 
@@ -167,9 +173,8 @@ The PDF page has the exact dimensions passed with
 Create or select a paper size in the printer settings with those
 same dimensions.
 .br
-For the default sheet, use 110×152 mm.
-.br
-Choose the orientation that matches the PDF.
+For the default sheet, use 110×152 mm, and choose the
+orientation that matches the PDF.
 
 Print at Actual Size or 100%.
 .br
@@ -188,9 +193,8 @@ speed and temperature.
 Turn off duplex printing and print only on the printable side of
 the sticker sheet.
 
-Print a proof on ordinary paper before using a sticker sheet.
-.br
-Measure the printed 100 mm ruler with a physical ruler.
+Print a proof on ordinary paper before using a sticker sheet,
+and measure the printed 100 mm ruler with a physical ruler.
 .br
 If it is not exactly 100 mm, correct the printer scaling before
 changing either offset.
@@ -206,8 +210,10 @@ the calibration proof and the sticker sheet.
 .SH TEXT
 Repeat \fB\-\-text\fR once per sticker.
 .br
-A real newline or the two characters \fB\en\fR starts another
+A real newline inside \fB'''\fR or \fB"""\fR starts another
 line.
+.br
+The two characters \fB\en\fR do the same thing.
 .br
 Colors follow the text stickers in order.
 .br
@@ -217,6 +223,9 @@ under \fB\-\-color\fR) and \fB#rrggbb\fR both work.
 Hebrew uses an embedded font.
 
 .nf
+make\-labels \-\-text '''MASTER
+SAW''' \-\-text """SLAVE
+VAC""" \-\-color green \-\-color red
 make\-labels \-\-text 'MASTER\enSAW' \-\-text 'SLAVE\enVAC' \-\-color green \-\-color red
 make\-labels \-\-text 'מסור\enשואב' \-\-color blue
 .fi
@@ -246,22 +255,24 @@ One sticker can hold a logo and text.
 \fB\-\-combo\fR uses the same sticker text as \fB\-\-cell\fR,
 without the row and column.
 .br
-\fBPATH|TEXT\fR puts the logo before the words.
-.br
-\fBPATH TEXT\fR as two words means the same thing.
+\fBPATH|TEXT\fR puts the logo before the words, and \fBPATH
+TEXT\fR as two words means the same thing.
 .br
 A third field of \fBleft\fR, \fBright\fR, or \fBtop\fR is the
 layout.
 .br
-Any other third field is a logo after the words.
-.br
-A fourth field is the layout.
+Any other third field is a logo after the words, and a fourth
+field is the layout.
 .br
 A colour name or \fB#rrggbb\fR after the last comma colours the
 words.
-.br
+
 \fB\-\-layout\fR is the default when that text does not name a
 layout.
+.br
+\fB\-\-layout left\fR puts the logo before the text,
+\fB\-\-layout right\fR puts it after, and \fB\-\-layout top\fR
+puts it above.
 .br
 One \fB\-\-layout top\fR puts the logo above the words on every
 such combo.
@@ -269,12 +280,6 @@ such combo.
 A combo that names an end logo keeps a logo on both sides.
 .br
 Both logos match the text height and share its vertical center.
-
-\fB\-\-layout left\fR puts the logo before the text.
-.br
-\fB\-\-layout right\fR puts it after the text.
-.br
-\fB\-\-layout top\fR puts it above the text.
 
 .nf
 make\-labels \-\-combo logo.svg 'MASTER\enSAW'
@@ -315,6 +320,7 @@ make\-labels \-\-cell 1,1,@logo.png \-\-cell 1,2,N,black
 Sizes are millimetres.
 .br
 Pass a repeatable switch again for another sticker.
+
 
 .TP
 \fB\-W\fR, \fB\-\-page\-w\fR
@@ -398,8 +404,8 @@ Words for one sticker.
 .br
 Repeat it for the next sticker.
 .br
-A real line break, or the two characters \fBn\fR, starts a new
-line.
+A real line break inside \fB'''\fR or \fB"""\fR, or the two
+characters \fBn\fR, starts a new line.
 .br
 With no stickers chosen, the sheet alternates those two words,
 green then red.
