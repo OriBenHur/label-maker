@@ -27,7 +27,7 @@ from labels import (
 )
 from labels.svg_draw import INSET
 from labels.to_svg import PRINT_DPI, fit_box, sticker_px
-from labels.cli import main
+from labels.cli import _combo_spec, main
 from labels.manual import man_page
 from labels.pdf import MM, TTF_PATH
 
@@ -631,6 +631,44 @@ class LabelTests(unittest.TestCase):
         second_at = coloured_stream.index("(SECOND)")
         self.assertIn("0.000 0.550 0.220 rg", coloured_stream[:first_at])
         self.assertIn("0.820 0.080 0.100 rg", coloured_stream[first_at:second_at])
+
+    def test_combo_colour_is_a_pipe_field(self) -> None:
+        image = self.write_svg()
+        icon = self.write_svg("icon.svg")
+        sticker = _combo_spec(f"{image}|MASTER|icon.png|blue")
+        self.assertEqual(sticker.color, (0.12, 0.28, 0.72))
+        self.assertEqual(sticker.end, Path("icon.png"))
+        above = _combo_spec(f"{image}|MASTER|top|#1c4ed8")
+        self.assertEqual(above.layout, "top")
+        self.assertIsNone(above.end)
+        self.assertEqual(above.color, (0x1c / 255, 0x4e / 255, 0xd8 / 255))
+        comma = _combo_spec(f"{image}|MASTER,green")
+        self.assertEqual(comma.color, (0.00, 0.55, 0.22))
+        self.assertIsNone(comma.end)
+        picture = _combo_spec(f"{image}|MASTER|blue.png")
+        self.assertIsNone(picture.color)
+        self.assertEqual(picture.end, Path("blue.png"))
+        with self.assertRaisesRegex(LabelError, "two colours"):
+            _combo_spec(f"{image}|MASTER|red,blue")
+        output = self.directory / "pipe-colour.pdf"
+        result = CliRunner().invoke(
+            main,
+            [
+                "--combo", f"{image}|MASTER|{icon}|blue",
+                "--cell", f"1,2,@{image}|SLAVE|top|red",
+                "--rows", "1",
+                "--cols", "2",
+                "--page-w", "120",
+                "--offset-y", "0",
+                "--out", str(output),
+            ],
+        )
+        self.assertEqual(result.exit_code, 0, result.output)
+        stream = content_stream(output.read_bytes())
+        master = stream.index("(MASTER)")
+        slave = stream.index("(SLAVE)")
+        self.assertIn("0.120 0.280 0.720 rg", stream[:master])
+        self.assertIn("0.820 0.080 0.100 rg", stream[master:slave])
 
     def test_combo_cell_keeps_hebrew_and_color(self) -> None:
         image = self.write_svg()

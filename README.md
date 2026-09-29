@@ -232,21 +232,22 @@ A photograph stays embedded, because tracing it would not stay sharp.
 
 One sticker can hold a logo and text.  
 `--combo` uses the same sticker text as `--cell`, without the row and column.  
-`PATH|TEXT` puts the logo before the words, and `PATH TEXT` as two words means the same thing.  
-A third field of `left`, `right`, or `top` is the layout.  
-Any other third field is a logo after the words, and a fourth field is the layout.  
-A colour name or `#rrggbb` after the last comma colours the words.
+`logo.svg|MASTER` puts `logo.svg` before `MASTER`, and `logo.svg MASTER` as two words means the same thing.  
+A third field of `left`, `right`, or `top` moves that one picture.  
+Any other third field is a picture after the words.  
+A layout after that second picture is ignored.  
+A last field of a colour name or `#rrggbb` colours the words.
 
 `--layout` is the default when that text does not name a layout.  
 `--layout left` puts the logo before the text, `--layout right` puts it after, and `--layout top` puts it above.  
 One `--layout top` puts the logo above the words on every such combo.  
-A combo that names an end logo keeps a logo on both sides.  
+A combo that names a logo after the words keeps a logo on both sides.  
 Both logos match the text height and share its vertical center.
 
 ```bash
 make-labels --combo logo.svg 'MASTER\nSAW'
 make-labels --combo 'logo.svg|SLAVE\nVAC' --layout right --color red
-make-labels --combo 'logo.svg|MASTER|mark.png'
+make-labels --combo 'logo.svg|MASTER|mark.png|blue'
 make-labels --combo 'logo.svg|FIRST|top' --combo 'mark.png|SECOND|right'
 ```
 
@@ -254,17 +255,17 @@ make-labels --combo 'logo.svg|FIRST|top' --combo 'mark.png|SECOND|right'
 
 `--cell` fills one sticker and leaves the rest of the sheet blank.  
 Rows and columns start at 1.  
-`@path` is a picture.  
-`@path|text` is a logo before the text.  
-`@path|text|end` puts a logo on each side.  
-`@|text|end` puts the logo after the text.  
-`@path|text|top` puts that logo above the words.  
-`@path|text|end|right` sets the end logo and the layout.  
-`left`, `right`, and `top` in that position are layouts.  
-A color after the last comma applies to the text.
+`@logo.svg` is a picture with no words.  
+`@logo.svg|MASTER` puts `logo.svg` before `MASTER`.  
+`@logo.svg|MASTER|icon.png` puts `logo.svg` before `MASTER` and `icon.png` after it.  
+`@|MASTER|icon.png` puts only `icon.png`, after `MASTER`.  
+`@logo.svg|MASTER|top` puts `logo.svg` above `MASTER`.  
+`left`, `right`, and `top` in that position are layouts, not file names.  
+A last field of a colour name or `#rrggbb` colours the words.  
+A comma before the colour still works, as in `1,1,@logo.svg|MASTER,blue`.
 
 ```bash
-make-labels --cell '1,1,@logo.svg|מסור,blue'
+make-labels --cell '1,1,@logo.svg|MASTER|top|blue'
 make-labels --cell 1,1,@logo.png --cell 1,2,N,black
 ```
 
@@ -294,10 +295,10 @@ The sheets in `examples/` are drawn so the change is easy to see.
 | `-T`, `--text` | MASTER, SLAVE | Words for one sticker.<br>Repeat it for the next sticker.<br>A real line break inside `'''` or `"""`, or the two characters `\n`, starts a new line.<br>With no stickers chosen, the sheet alternates those two words, green then red. | `make-labels --text 'MASTER\nSAW' --text 'SLAVE\nVAC'`<br>[examples/text.pdf](examples/text.pdf) |
 | `-I`, `--image` | — | A picture for one sticker.<br>Repeat it for the next sticker.<br>SVG is drawn as vectors.<br>PNG, JPEG, GIF, WebP, BMP, TIFF, and AVIF are placed at 300 dpi. | `make-labels --image logo.svg`<br>[examples/image.pdf](examples/image.pdf) |
 | `--trace` | off | Outline a flat logo as vector paths.<br>A photograph stays an embedded picture, because a trace of it would not stay sharp. | `make-labels --image logo.png --trace`<br>[examples/trace.pdf](examples/trace.pdf) |
-| `--combo` `SPEC` | — | One sticker with a logo and words, using the same text as `--cell`.<br>`PATH\|TEXT` puts the logo before the words.<br>`PATH TEXT` as two words means the same thing.<br>A third field of `left`, `right`, or `top` is the layout.<br>Any other third field is a logo after the words.<br>A fourth field is the layout.<br>A colour after the last comma colours the words.<br>Repeat it for another sticker. | `make-labels --combo 'logo.svg\|MASTER\|mark.png\|top'`<br>[examples/combo.pdf](examples/combo.pdf) |
-| `--layout` `CHOICE` | `left` | Default layout for every `--combo` and `--cell` that does not name its own.<br>`top` puts that logo above its words.<br>`left` puts that logo before its words.<br>`right` puts that logo after its words.<br>A sticker that names an end logo keeps a logo on both sides. | `make-labels --combo logo.svg MASTER --layout top`<br>[examples/layout.pdf](examples/layout.pdf) |
+| `--combo` `SPEC` | — | One sticker with a logo and words, using the same text as `--cell`.<br>`logo.svg\|MASTER` puts `logo.svg` before `MASTER`.<br>`logo.svg MASTER` as two words means the same thing.<br>A third field of `left`, `right`, or `top` moves that one picture.<br>Any other third field is a picture after the words.<br>A layout after that second picture is ignored.<br>A last field of a colour name or `#rrggbb` colours the words.<br>Repeat it for another sticker. | `make-labels --combo 'logo.svg\|MASTER\|mark.png\|blue'`<br>[examples/combo.pdf](examples/combo.pdf) |
+| `--layout` `CHOICE` | `left` | Default layout for every `--combo` and `--cell` that does not name its own.<br>`top` puts that logo above its words.<br>`left` puts that logo before its words.<br>`right` puts that logo after its words.<br>A sticker that names a logo after the words keeps a logo on both sides. | `make-labels --combo logo.svg MASTER --layout top`<br>[examples/layout.pdf](examples/layout.pdf) |
 | `-C`, `--color` | green, red, blue, purple | Colour of the next text or combo sticker, in order.<br>Repeat it for the next one.<br>A picture-only sticker does not take a colour.<br>A `--combo` that names its own colour keeps the next `--color` for the next sticker.<br>Use a name or `#rrggbb`.<br>Names: black, white, red, green, blue, yellow, orange, purple, grey, gray, brown. | `make-labels --text MASTER --color green`<br>[examples/color.pdf](examples/color.pdf) |
-| `-e`, `--cell` | — | Fill one sticker and leave the rest of the sheet blank.<br>Repeat it for another sticker.<br>The form is `ROW,COL,TEXT`.<br>Rows and columns start at 1.<br>`@path` is a picture.<br>`@path\|text` is a logo before the words.<br>`@path\|text\|end` puts a logo on each side.<br>`@\|text\|end` puts the logo after the text.<br>`@path\|text\|top` puts that logo above the words.<br>`@path\|text\|end\|right` sets the end logo and the layout.<br>`left`, `right`, and `top` in that position are layouts.<br>A colour name or `#rrggbb` after the last comma colours the words. | `make-labels --cell '1,1,@logo.svg\|MASTER\|top,blue'`<br>[examples/cell.pdf](examples/cell.pdf) |
+| `-e`, `--cell` | — | Fill one sticker and leave the rest of the sheet blank.<br>Repeat it for another sticker.<br>The form is `ROW,COL,TEXT`.<br>Rows and columns start at 1.<br>`@logo.svg` is a picture with no words.<br>`@logo.svg\|MASTER` puts `logo.svg` before `MASTER`.<br>`@logo.svg\|MASTER\|icon.png` puts `logo.svg` before `MASTER` and `icon.png` after it.<br>`@\|MASTER\|icon.png` puts only `icon.png`, after `MASTER`.<br>`@logo.svg\|MASTER\|top` puts `logo.svg` above `MASTER`.<br>`left`, `right`, and `top` in that position are layouts, not file names.<br>A last field of a colour name or `#rrggbb` colours the words.<br>A comma before the colour still works, as in `1,1,@logo.svg\|MASTER,blue`. | `make-labels --cell '1,1,@logo.svg\|MASTER\|top\|blue'`<br>[examples/cell.pdf](examples/cell.pdf) |
 | `-F`, `--font-mm` | fit | Letter height.<br>The letters grow until they fit the sticker. | `make-labels --font-mm 8`<br>[examples/font-mm.pdf](examples/font-mm.pdf) |
 | `-R`, `--rotate` | off | Turn the sticker contents so they read from the bottom toward the top. | `make-labels --text MASTER --rotate`<br>[examples/rotate.pdf](examples/rotate.pdf) |
 | `-n`, `--limit` | all | How many stickers to print, starting at the first.<br>The rest of the grid stays blank. | `make-labels --limit 4`<br>[examples/limit.pdf](examples/limit.pdf) |
@@ -376,6 +377,6 @@ A plain dict with the old names (`page_w`, `cols`, `lw`, `text`, `color`, `cell`
 
 ## License
 
-Copyright © 2026 Ori Ben-Hur.  
+Copyright © 2026 Ori Ben Hur.  
 This project is available under the [MIT License](LICENSE).  
 You may use, modify, and distribute it, but copies or substantial portions must keep the copyright and license notice.

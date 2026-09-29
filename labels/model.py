@@ -243,8 +243,20 @@ class SheetSpec:
 _LAYOUTS = frozenset({"left", "right", "top"})
 
 
+def _field_color(field: str) -> RGB | None:
+    if field.startswith("#") or field.lower() in NAMED_COLORS:
+        return parse_color(field)
+    return None
+
+
 def _combo_at(spec: str, color: RGB | str | None = None, layout: str = "left") -> ComboSticker:
     parts = spec.split("|")
+    piped = _field_color(parts[-1]) if parts else None
+    if piped is not None:
+        if color is not None:
+            raise LabelError("a combo names two colours")
+        color = piped
+        parts = parts[:-1]
     if len(parts) < 2 or not parts[1]:
         raise LabelError("a combo needs text")
     if len(parts) > 4:

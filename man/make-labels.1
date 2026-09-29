@@ -255,16 +255,17 @@ One sticker can hold a logo and text.
 \fB\-\-combo\fR uses the same sticker text as \fB\-\-cell\fR,
 without the row and column.
 .br
-\fBPATH|TEXT\fR puts the logo before the words, and \fBPATH
-TEXT\fR as two words means the same thing.
+\fBlogo.svg|MASTER\fR puts \fBlogo.svg\fR before \fBMASTER\fR,
+and \fBlogo.svg MASTER\fR as two words means the same thing.
 .br
-A third field of \fBleft\fR, \fBright\fR, or \fBtop\fR is the
-layout.
+A third field of \fBleft\fR, \fBright\fR, or \fBtop\fR moves
+that one picture.
 .br
-Any other third field is a logo after the words, and a fourth
-field is the layout.
+Any other third field is a picture after the words.
 .br
-A colour name or \fB#rrggbb\fR after the last comma colours the
+A layout after that second picture is ignored.
+.br
+A last field of a colour name or \fB#rrggbb\fR colours the
 words.
 
 \fB\-\-layout\fR is the default when that text does not name a
@@ -277,14 +278,15 @@ puts it above.
 One \fB\-\-layout top\fR puts the logo above the words on every
 such combo.
 .br
-A combo that names an end logo keeps a logo on both sides.
+A combo that names a logo after the words keeps a logo on both
+sides.
 .br
 Both logos match the text height and share its vertical center.
 
 .nf
 make\-labels \-\-combo logo.svg 'MASTER\enSAW'
 make\-labels \-\-combo 'logo.svg|SLAVE\enVAC' \-\-layout right \-\-color red
-make\-labels \-\-combo 'logo.svg|MASTER|mark.png'
+make\-labels \-\-combo 'logo.svg|MASTER|mark.png|blue'
 make\-labels \-\-combo 'logo.svg|FIRST|top' \-\-combo 'mark.png|SECOND|right'
 .fi
 
@@ -294,25 +296,30 @@ sheet blank.
 .br
 Rows and columns start at 1.
 .br
-\fB@path\fR is a picture.
+\fB@logo.svg\fR is a picture with no words.
 .br
-\fB@path|text\fR is a logo before the text.
+\fB@logo.svg|MASTER\fR puts \fBlogo.svg\fR before \fBMASTER\fR.
 .br
-\fB@path|text|end\fR puts a logo on each side.
+\fB@logo.svg|MASTER|icon.png\fR puts \fBlogo.svg\fR before
+\fBMASTER\fR and \fBicon.png\fR after it.
 .br
-\fB@|text|end\fR puts the logo after the text.
+\fB@|MASTER|icon.png\fR puts only \fBicon.png\fR, after
+\fBMASTER\fR.
 .br
-\fB@path|text|top\fR puts that logo above the words.
-.br
-\fB@path|text|end|right\fR sets the end logo and the layout.
+\fB@logo.svg|MASTER|top\fR puts \fBlogo.svg\fR above
+\fBMASTER\fR.
 .br
 \fBleft\fR, \fBright\fR, and \fBtop\fR in that position are
-layouts.
+layouts, not file names.
 .br
-A color after the last comma applies to the text.
+A last field of a colour name or \fB#rrggbb\fR colours the
+words.
+.br
+A comma before the colour still works, as in
+\fB1,1,@logo.svg|MASTER,blue\fR.
 
 .nf
-make\-labels \-\-cell '1,1,@logo.svg|מסור,blue'
+make\-labels \-\-cell '1,1,@logo.svg|MASTER|top|blue'
 make\-labels \-\-cell 1,1,@logo.png \-\-cell 1,2,N,black
 .fi
 
@@ -431,18 +438,19 @@ would not stay sharp.
 One sticker with a logo and words, using the same text as
 \fB\-\-cell\fR.
 .br
-\fBPATH|TEXT\fR puts the logo before the words.
+\fBlogo.svg|MASTER\fR puts \fBlogo.svg\fR before \fBMASTER\fR.
 .br
-\fBPATH TEXT\fR as two words means the same thing.
+\fBlogo.svg MASTER\fR as two words means the same thing.
 .br
-A third field of \fBleft\fR, \fBright\fR, or \fBtop\fR is the
-layout.
+A third field of \fBleft\fR, \fBright\fR, or \fBtop\fR moves
+that one picture.
 .br
-Any other third field is a logo after the words.
+Any other third field is a picture after the words.
 .br
-A fourth field is the layout.
+A layout after that second picture is ignored.
 .br
-A colour after the last comma colours the words.
+A last field of a colour name or \fB#rrggbb\fR colours the
+words.
 .br
 Repeat it for another sticker.
 .TP
@@ -458,7 +466,8 @@ does not name its own.
 .br
 \fBright\fR puts that logo after its words.
 .br
-A sticker that names an end logo keeps a logo on both sides.
+A sticker that names a logo after the words keeps a logo on both
+sides.
 .TP
 \fB\-C\fR, \fB\-\-color\fR
 Default: green, red, blue, purple.
@@ -486,23 +495,27 @@ The form is \fBROW,COL,TEXT\fR.
 .br
 Rows and columns start at 1.
 .br
-\fB@path\fR is a picture.
+\fB@logo.svg\fR is a picture with no words.
 .br
-\fB@path|text\fR is a logo before the words.
+\fB@logo.svg|MASTER\fR puts \fBlogo.svg\fR before \fBMASTER\fR.
 .br
-\fB@path|text|end\fR puts a logo on each side.
+\fB@logo.svg|MASTER|icon.png\fR puts \fBlogo.svg\fR before
+\fBMASTER\fR and \fBicon.png\fR after it.
 .br
-\fB@|text|end\fR puts the logo after the text.
+\fB@|MASTER|icon.png\fR puts only \fBicon.png\fR, after
+\fBMASTER\fR.
 .br
-\fB@path|text|top\fR puts that logo above the words.
-.br
-\fB@path|text|end|right\fR sets the end logo and the layout.
+\fB@logo.svg|MASTER|top\fR puts \fBlogo.svg\fR above
+\fBMASTER\fR.
 .br
 \fBleft\fR, \fBright\fR, and \fBtop\fR in that position are
-layouts.
+layouts, not file names.
 .br
-A colour name or \fB#rrggbb\fR after the last comma colours the
+A last field of a colour name or \fB#rrggbb\fR colours the
 words.
+.br
+A comma before the colour still works, as in
+\fB1,1,@logo.svg|MASTER,blue\fR.
 .TP
 \fB\-F\fR, \fB\-\-font\-mm\fR
 Default: fit.
@@ -670,7 +683,7 @@ make\-labels \-\-image logo.png \-\-trace
 .TP
 \fB\-\-combo\fR \fISPEC\fR
 .nf
-make\-labels \-\-combo 'logo.svg|MASTER|mark.png|top'
+make\-labels \-\-combo 'logo.svg|MASTER|mark.png|blue'
 .fi
 .TP
 \fB\-\-layout\fR \fICHOICE\fR
@@ -685,7 +698,7 @@ make\-labels \-\-text MASTER \-\-color green
 .TP
 \fB\-e\fR, \fB\-\-cell\fR
 .nf
-make\-labels \-\-cell '1,1,@logo.svg|MASTER|top,blue'
+make\-labels \-\-cell '1,1,@logo.svg|MASTER|top|blue'
 .fi
 .TP
 \fB\-F\fR, \fB\-\-font\-mm\fR
@@ -819,7 +832,7 @@ A plain dict with the old names (\fBpage_w\fR, \fBcols\fR,
 \fBlw\fR, \fBtext\fR, \fBcolor\fR, \fBcell\fR) still works.
 
 .SH LICENSE
-Copyright © 2026 Ori Ben-Hur.
+Copyright © 2026 Ori Ben Hur.
 .br
 This project is available under the MIT License (LICENSE).
 .br
