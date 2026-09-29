@@ -1,0 +1,48 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 566.93 198.43] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 399 >>
+stream
+q 1 0 0 1 87.87 99.21 cm
+0.000 0.550 0.220 rg
+BT /F1 53.06 Tf 1 0 0 1 -14.75 -19.10 Tm (1) Tj ET
+Q
+q 1 0 0 1 218.27 99.21 cm
+0.820 0.080 0.100 rg
+BT /F1 53.06 Tf 1 0 0 1 -14.75 -19.10 Tm (2) Tj ET
+Q
+q 1 0 0 1 348.66 99.21 cm
+0.120 0.280 0.720 rg
+BT /F1 53.06 Tf 1 0 0 1 -14.75 -19.10 Tm (3) Tj ET
+Q
+q 1 0 0 1 479.06 99.21 cm
+0.450 0.220 0.700 rg
+BT /F1 53.06 Tf 1 0 0 1 -14.75 -19.10 Tm (4) Tj ET
+Q
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000247 00000 n 
+0000000697 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+799
+%%EOF

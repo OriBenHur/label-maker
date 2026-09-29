@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "label-maker"
+version = "0.1.0"
+description = "Print text and graphics on configurable label sheets"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.1,<9",
+    "Pillow>=10,<13",
+]
+
+[project.optional-dependencies]
+trace = ["vtracer>=0.6,<0.7"]
+
+[project.scripts]
+make-labels = "labels.cli:run"
+
+[tool.setuptools.packages.find]
+include = ["labels*"]
+
+[tool.setuptools.package-data]
+labels = ["make-labels.1"]

@@ -1,0 +1,821 @@
+.TH MAKE-LABELS 1 "2026-09-30" "label-maker 0.1.0" "User Commands"
+.SH NAME
+make-labels \- print text and pictures on a sheet of stickers
+.SH DESCRIPTION
+Print text and pictures on a sheet of stickers.
+.br
+The default sheet is 110×152 mm, two columns and four rows of
+52×34 mm labels.
+
+Text and SVG drawings are vectors.
+.br
+Photos and other pictures are placed at 300 dpi.
+.br
+A picture with a flat margin is trimmed to the artwork.
+
+\fB\-\-help\fR prints the short option list.
+.br
+\fB\-\-man\fR opens this manual.
+
+.SH INSTALL
+pipx keeps the tool in its own environment and puts
+\fBmake\-labels\fR on your PATH.
+
+From the project folder:
+
+.nf
+pipx install .
+.fi
+
+While you are changing the code, install it in place so edits
+apply immediately:
+
+.nf
+pipx install \-\-force \-\-editable .
+.fi
+
+After a normal install, pick up later changes with:
+
+.nf
+pipx reinstall label\-maker
+.fi
+
+Python 3.10 or newer is required.
+.br
+pipx installs Click and Pillow for you.
+
+You can also run it from this folder without installing.
+.br
+This creates \fB.venv\fR here:
+
+.nf
+python3 \-m venv .venv
+\&.venv/bin/pip install \-e .
+\&.venv/bin/python make\-labels.py \-\-help
+.fi
+
+\fBpython3 make\-labels.py\fR does the same thing when
+\fB.venv\fR already exists.
+.br
+It writes the PDF in the folder you ran it from.
+
+.SH SHEETS
+With no arguments the sheet alternates MASTER (green) and SLAVE
+(red):
+
+.nf
+make\-labels
+.fi
+
+That writes \fBlabels.pdf\fR.
+.br
+\fB\-\-proof\fR adds the alignment grid and a 100 mm ruler.
+.br
+\fB\-\-outline\fR draws only the grid and the ruler.
+
+.nf
+make\-labels \-\-proof \-o check.pdf
+make\-labels \-\-outline \-o alignment.pdf
+.fi
+
+Other sheets use millimetres.
+.br
+This is an A4 sheet of 63.5×33.9 mm labels:
+
+.nf
+make\-labels \-\-page\-w 210 \-\-page\-h 297 \-\-cols 3 \-\-rows 8 \e
+  \-\-lw 63.5 \-\-lh 33.9 \-\-gap\-x 2.5 \-\-gap\-y 0
+.fi
+
+\fB\-\-limit 4\fR prints only the first four stickers.
+.br
+\fB\-\-row 2\fR prints one row.
+.br
+\fB\-\-skip\-row\fR and \fB\-\-skip\-col\fR leave a row or
+column blank.
+.br
+If the grid does not fit the page, nothing is written unless you
+pass \fB\-\-force\fR.
+
+.SH PRINTER CALIBRATION
+Printers do not always place a sheet at exactly the expected
+origin.
+.br
+\fB\-\-offset\-x\fR and \fB\-\-offset\-y\fR correct that
+mechanical drift without changing the label size or spacing.
+.br
+A positive \fB\-\-offset\-x\fR moves the grid right.
+.br
+A positive \fB\-\-offset\-y\fR moves it down.
+.br
+Negative values move it left or up.
+
+First print a proof on ordinary paper cut to the same dimensions
+as the sticker sheet:
+
+.nf
+make\-labels \-\-proof \-\-out calibration.pdf
+.fi
+
+Place the print behind a sticker sheet and hold both against a
+light to compare the proof boxes with the stickers.
+.br
+Two stickers carry a millimetre scale.
+.br
+On a sheet of four or more rows they are the second row and the
+second-to-last row, at opposite ends.
+.br
+The first and last rows stay plain, because many printers cannot
+print the edge of the page.
+.br
+On a shorter sheet the ticks sit on the side of the sticker that
+faces the middle of the page.
+.br
+The shortest ticks mark half a millimetre.
+.br
+The longer ticks are numbered in millimetres.
+.br
+Read the number at the sticker edge.
+.br
+That number is the offset.
+.br
+If the boxes are 2 mm too far left and 1 mm too high, move them
+right and down:
+
+.nf
+make\-labels \-\-proof \-\-offset\-x 2 \-\-offset\-y 1 \-\-out calibration.pdf
+.fi
+
+Print the adjusted proof and check it again.
+.br
+You can print the second test on the other side of the same
+ordinary sheet.
+.br
+Keep the paper orientation and feed direction the same for every
+test.
+
+Use sticker sheets only when the printer supports their
+dimensions, material, and media type.
+.br
+Follow the printer and sticker-sheet instructions for the
+correct tray, printable side, and laser or inkjet compatibility.
+
+.SH PRINT SETTINGS
+The PDF page has the exact dimensions passed with
+\fB\-\-page\-w\fR and \fB\-\-page\-h\fR.
+.br
+Create or select a paper size in the printer settings with those
+same dimensions.
+.br
+For the default sheet, use 110×152 mm.
+.br
+Choose the orientation that matches the PDF.
+
+Print at Actual Size or 100%.
+.br
+Turn off Fit, Shrink oversized pages, Scale to fit, and any
+automatic enlargement.
+.br
+Do not use borderless printing unless the printer can keep it at
+100%, because many borderless modes enlarge and crop the page.
+
+Select the tray and media type recommended for the sticker
+sheet.
+.br
+Labels, Heavy Paper, or Cardstock settings may change the feed
+speed and temperature.
+.br
+Turn off duplex printing and print only on the printable side of
+the sticker sheet.
+
+Print a proof on ordinary paper before using a sticker sheet.
+.br
+Measure the printed 100 mm ruler with a physical ruler.
+.br
+If it is not exactly 100 mm, correct the printer scaling before
+changing either offset.
+.br
+Offsets fix position, not size.
+
+Save the working paper size and printer options as a printer
+preset when the print dialog supports presets.
+.br
+Use the same preset, tray, orientation, and feed direction for
+the calibration proof and the sticker sheet.
+
+.SH TEXT
+Repeat \fB\-\-text\fR once per sticker.
+.br
+A real newline or the two characters \fB\en\fR starts another
+line.
+.br
+Colors follow the text stickers in order.
+.br
+Names (\fBgreen\fR, \fBred\fR, \fBblue\fR, and the others listed
+under \fB\-\-color\fR) and \fB#rrggbb\fR both work.
+.br
+Hebrew uses an embedded font.
+
+.nf
+make\-labels \-\-text 'MASTER\enSAW' \-\-text 'SLAVE\enVAC' \-\-color green \-\-color red
+make\-labels \-\-text 'מסור\enשואב' \-\-color blue
+.fi
+
+\fB\-\-rotate\fR turns the content from the bottom of the
+sticker toward the top.
+.br
+\fB\-\-font\-mm 8\fR sets the letter height.
+
+.SH PICTURES
+SVG files are drawn as vectors.
+.br
+PNG, JPEG, GIF, WebP, BMP, TIFF, and AVIF are embedded at 300
+dpi for the sticker.
+
+.nf
+make\-labels \-\-image logo.svg \-\-image mark.png
+.fi
+
+\fB\-\-trace\fR outlines a flat logo as vector paths.
+.br
+A photograph stays embedded, because tracing it would not stay
+sharp.
+
+One sticker can hold a logo and text.
+.br
+\fB\-\-combo\fR uses the same sticker text as \fB\-\-cell\fR,
+without the row and column.
+.br
+\fBPATH|TEXT\fR puts the logo before the words.
+.br
+\fBPATH TEXT\fR as two words means the same thing.
+.br
+A third field of \fBleft\fR, \fBright\fR, or \fBtop\fR is the
+layout.
+.br
+Any other third field is a logo after the words.
+.br
+A fourth field is the layout.
+.br
+A colour name or \fB#rrggbb\fR after the last comma colours the
+words.
+.br
+\fB\-\-layout\fR is the default when that text does not name a
+layout.
+.br
+One \fB\-\-layout top\fR puts the logo above the words on every
+such combo.
+.br
+A combo that names an end logo keeps a logo on both sides.
+.br
+Both logos match the text height and share its vertical center.
+
+\fB\-\-layout left\fR puts the logo before the text.
+.br
+\fB\-\-layout right\fR puts it after the text.
+.br
+\fB\-\-layout top\fR puts it above the text.
+
+.nf
+make\-labels \-\-combo logo.svg 'MASTER\enSAW'
+make\-labels \-\-combo 'logo.svg|SLAVE\enVAC' \-\-layout right \-\-color red
+make\-labels \-\-combo 'logo.svg|MASTER|mark.png'
+make\-labels \-\-combo 'logo.svg|FIRST|top' \-\-combo 'mark.png|SECOND|right'
+.fi
+
+.SH SINGLE CELLS
+\fB\-\-cell\fR fills one sticker and leaves the rest of the
+sheet blank.
+.br
+Rows and columns start at 1.
+.br
+\fB@path\fR is a picture.
+.br
+\fB@path|text\fR is a logo before the text.
+.br
+\fB@path|text|end\fR puts a logo on each side.
+.br
+\fB@|text|end\fR puts the logo after the text.
+.br
+\fB@path|text|top\fR puts that logo above the words.
+.br
+\fB@path|text|end|right\fR sets the end logo and the layout.
+.br
+\fBleft\fR, \fBright\fR, and \fBtop\fR in that position are
+layouts.
+.br
+A color after the last comma applies to the text.
+
+.nf
+make\-labels \-\-cell '1,1,@logo.svg|מסור,blue'
+make\-labels \-\-cell 1,1,@logo.png \-\-cell 1,2,N,black
+.fi
+
+.SH SWITCHES
+Sizes are millimetres.
+.br
+Pass a repeatable switch again for another sticker.
+
+.TP
+\fB\-W\fR, \fB\-\-page\-w\fR
+Default: 110.
+.br
+Width of the paper.
+.TP
+\fB\-H\fR, \fB\-\-page\-h\fR
+Default: 152.
+.br
+Height of the paper.
+.TP
+\fB\-c\fR, \fB\-\-cols\fR
+Default: 2.
+.br
+How many stickers fit across the page.
+.TP
+\fB\-r\fR, \fB\-\-rows\fR
+Default: 4.
+.br
+How many stickers fit down the page.
+.TP
+\fB\-w\fR, \fB\-\-lw\fR
+Default: 52.
+.br
+Width of one sticker.
+.TP
+\fB\-t\fR, \fB\-\-lh\fR
+Default: 34.
+.br
+Height of one sticker.
+.TP
+\fB\-g\fR, \fB\-\-gap\-x\fR
+Default: 2.7.
+.br
+Horizontal space between stickers.
+.br
+When you leave \fB\-\-margin\-x\fR out, the leftover space is
+split into equal left and right margins.
+.TP
+\fB\-G\fR, \fB\-\-gap\-y\fR
+Default: 4.
+.br
+Vertical space between stickers.
+.br
+When you leave \fB\-\-margin\-y\fR out, the leftover space is
+split into equal top and bottom margins.
+.TP
+\fB\-m\fR, \fB\-\-margin\-x\fR
+Default: centered.
+.br
+Left margin.
+.br
+The row of stickers sits in the middle of the page.
+.TP
+\fB\-M\fR, \fB\-\-margin\-y\fR
+Default: centered.
+.br
+Top margin.
+.br
+The column of stickers sits in the middle of the page.
+.br
+\fB\-\-offset\-y\fR is applied after that.
+.TP
+\fB\-x\fR, \fB\-\-offset\-x\fR
+Default: 0.
+.br
+Extra shift to the right, after the margin.
+.TP
+\fB\-y\fR, \fB\-\-offset\-y\fR
+Default: 0.
+.br
+Extra shift down, after the margin.
+.br
+A positive number moves the stickers down.
+.TP
+\fB\-T\fR, \fB\-\-text\fR
+Default: MASTER, SLAVE.
+.br
+Words for one sticker.
+.br
+Repeat it for the next sticker.
+.br
+A real line break, or the two characters \fBn\fR, starts a new
+line.
+.br
+With no stickers chosen, the sheet alternates those two words,
+green then red.
+.TP
+\fB\-I\fR, \fB\-\-image\fR
+A picture for one sticker.
+.br
+Repeat it for the next sticker.
+.br
+SVG is drawn as vectors.
+.br
+PNG, JPEG, GIF, WebP, BMP, TIFF, and AVIF are placed at 300 dpi.
+.TP
+\fB\-\-trace\fR
+Default: off.
+.br
+Outline a flat logo as vector paths.
+.br
+A photograph stays an embedded picture, because a trace of it
+would not stay sharp.
+.TP
+\fB\-\-combo\fR \fISPEC\fR
+One sticker with a logo and words, using the same text as
+\fB\-\-cell\fR.
+.br
+\fBPATH|TEXT\fR puts the logo before the words.
+.br
+\fBPATH TEXT\fR as two words means the same thing.
+.br
+A third field of \fBleft\fR, \fBright\fR, or \fBtop\fR is the
+layout.
+.br
+Any other third field is a logo after the words.
+.br
+A fourth field is the layout.
+.br
+A colour after the last comma colours the words.
+.br
+Repeat it for another sticker.
+.TP
+\fB\-\-layout\fR \fICHOICE\fR
+Default: \fBleft\fR.
+.br
+Default layout for every \fB\-\-combo\fR and \fB\-\-cell\fR that
+does not name its own.
+.br
+\fBtop\fR puts that logo above its words.
+.br
+\fBleft\fR puts that logo before its words.
+.br
+\fBright\fR puts that logo after its words.
+.br
+A sticker that names an end logo keeps a logo on both sides.
+.TP
+\fB\-C\fR, \fB\-\-color\fR
+Default: green, red, blue, purple.
+.br
+Colour of the next text or combo sticker, in order.
+.br
+Repeat it for the next one.
+.br
+A picture-only sticker does not take a colour.
+.br
+A \fB\-\-combo\fR that names its own colour keeps the next
+\fB\-\-color\fR for the next sticker.
+.br
+Use a name or \fB#rrggbb\fR.
+.br
+Names: black, white, red, green, blue, yellow, orange, purple,
+grey, gray, brown.
+.TP
+\fB\-e\fR, \fB\-\-cell\fR
+Fill one sticker and leave the rest of the sheet blank.
+.br
+Repeat it for another sticker.
+.br
+The form is \fBROW,COL,TEXT\fR.
+.br
+Rows and columns start at 1.
+.br
+\fB@path\fR is a picture.
+.br
+\fB@path|text\fR is a logo before the words.
+.br
+\fB@path|text|end\fR puts a logo on each side.
+.br
+\fB@|text|end\fR puts the logo after the text.
+.br
+\fB@path|text|top\fR puts that logo above the words.
+.br
+\fB@path|text|end|right\fR sets the end logo and the layout.
+.br
+\fBleft\fR, \fBright\fR, and \fBtop\fR in that position are
+layouts.
+.br
+A colour name or \fB#rrggbb\fR after the last comma colours the
+words.
+.TP
+\fB\-F\fR, \fB\-\-font\-mm\fR
+Default: fit.
+.br
+Letter height.
+.br
+The letters grow until they fit the sticker.
+.TP
+\fB\-R\fR, \fB\-\-rotate\fR
+Default: off.
+.br
+Turn the sticker contents so they read from the bottom toward
+the top.
+.TP
+\fB\-n\fR, \fB\-\-limit\fR
+Default: all.
+.br
+How many stickers to print, starting at the first.
+.br
+The rest of the grid stays blank.
+.TP
+\fB\-L\fR, \fB\-\-row\fR
+Default: all.
+.br
+Which row to print.
+.br
+Rows start at 1.
+.br
+The other rows stay blank.
+.TP
+\fB\-S\fR, \fB\-\-skip\-row\fR
+Leave this row blank.
+.br
+Rows start at 1.
+.br
+Repeat it for another row.
+.TP
+\fB\-s\fR, \fB\-\-skip\-col\fR
+Leave this column blank.
+.br
+Columns start at 1.
+.br
+Repeat it for another column.
+.TP
+\fB\-b\fR, \fB\-\-outline\fR
+Default: off.
+.br
+Draw the sticker borders and a 100 mm ruler, with no words or
+pictures.
+.br
+The file is \fBalignment.pdf\fR when you leave \fB\-\-out\fR
+out.
+.TP
+\fB\-p\fR, \fB\-\-proof\fR
+Default: off.
+.br
+Draw the words and pictures, and also the borders and the 100 mm
+ruler.
+.br
+The file is \fBproof.pdf\fR when you leave \fB\-\-out\fR out.
+.TP
+\fB\-f\fR, \fB\-\-force\fR
+Default: off.
+.br
+Write the PDF even when the stickers run off the page.
+.TP
+\fB\-o\fR, \fB\-\-out\fR
+Default: \fBlabels.pdf\fR.
+.br
+Where to write the PDF.
+.br
+\fB\-\-proof\fR writes \fBproof.pdf\fR and \fB\-\-outline\fR
+writes \fBalignment.pdf\fR when this switch is left out.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print the short option list and exit.
+.TP
+\fB\-\-man\fR
+Open this manual and exit.
+.br
+When the output is a pipe, the manual is the raw man page
+instead.
+.TP
+\fB\-\-completion\fR \fISHELL\fR
+Print a shell completion script and exit.
+.br
+\fBSHELL\fR is \fBzsh\fR, \fBbash\fR, or \fBfish\fR.
+
+.SH EXAMPLES
+.TP
+\fB\-W\fR, \fB\-\-page\-w\fR
+.nf
+make\-labels \-\-page\-w 210
+.fi
+.TP
+\fB\-H\fR, \fB\-\-page\-h\fR
+.nf
+make\-labels \-\-page\-h 297
+.fi
+.TP
+\fB\-c\fR, \fB\-\-cols\fR
+.nf
+make\-labels \-\-cols 3
+.fi
+.TP
+\fB\-r\fR, \fB\-\-rows\fR
+.nf
+make\-labels \-\-rows 8
+.fi
+.TP
+\fB\-w\fR, \fB\-\-lw\fR
+.nf
+make\-labels \-\-lw 63.5
+.fi
+.TP
+\fB\-t\fR, \fB\-\-lh\fR
+.nf
+make\-labels \-\-lh 33.9
+.fi
+.TP
+\fB\-g\fR, \fB\-\-gap\-x\fR
+.nf
+make\-labels \-\-gap\-x 2.5
+.fi
+.TP
+\fB\-G\fR, \fB\-\-gap\-y\fR
+.nf
+make\-labels \-\-gap\-y 0
+.fi
+.TP
+\fB\-m\fR, \fB\-\-margin\-x\fR
+.nf
+make\-labels \-\-margin\-x 5
+.fi
+.TP
+\fB\-M\fR, \fB\-\-margin\-y\fR
+.nf
+make\-labels \-\-margin\-y 5
+.fi
+.TP
+\fB\-x\fR, \fB\-\-offset\-x\fR
+.nf
+make\-labels \-\-offset\-x 1
+.fi
+.TP
+\fB\-y\fR, \fB\-\-offset\-y\fR
+.nf
+make\-labels \-\-offset\-y 10
+.fi
+.TP
+\fB\-T\fR, \fB\-\-text\fR
+.nf
+make\-labels \-\-text 'MASTERnSAW' \-\-text 'SLAVEnVAC'
+.fi
+.TP
+\fB\-I\fR, \fB\-\-image\fR
+.nf
+make\-labels \-\-image logo.svg
+.fi
+.TP
+\fB\-\-trace\fR
+.nf
+make\-labels \-\-image logo.png \-\-trace
+.fi
+.TP
+\fB\-\-combo\fR \fISPEC\fR
+.nf
+make\-labels \-\-combo 'logo.svg|MASTER|mark.png|top'
+.fi
+.TP
+\fB\-\-layout\fR \fICHOICE\fR
+.nf
+make\-labels \-\-combo logo.svg MASTER \-\-layout top
+.fi
+.TP
+\fB\-C\fR, \fB\-\-color\fR
+.nf
+make\-labels \-\-text MASTER \-\-color green
+.fi
+.TP
+\fB\-e\fR, \fB\-\-cell\fR
+.nf
+make\-labels \-\-cell '1,1,@logo.svg|MASTER|top,blue'
+.fi
+.TP
+\fB\-F\fR, \fB\-\-font\-mm\fR
+.nf
+make\-labels \-\-font\-mm 8
+.fi
+.TP
+\fB\-R\fR, \fB\-\-rotate\fR
+.nf
+make\-labels \-\-text MASTER \-\-rotate
+.fi
+.TP
+\fB\-n\fR, \fB\-\-limit\fR
+.nf
+make\-labels \-\-limit 4
+.fi
+.TP
+\fB\-L\fR, \fB\-\-row\fR
+.nf
+make\-labels \-\-row 2
+.fi
+.TP
+\fB\-S\fR, \fB\-\-skip\-row\fR
+.nf
+make\-labels \-\-skip\-row 3
+.fi
+.TP
+\fB\-s\fR, \fB\-\-skip\-col\fR
+.nf
+make\-labels \-\-skip\-col 1
+.fi
+.TP
+\fB\-b\fR, \fB\-\-outline\fR
+.nf
+make\-labels \-\-outline
+.fi
+.TP
+\fB\-p\fR, \fB\-\-proof\fR
+.nf
+make\-labels \-\-proof
+.fi
+.TP
+\fB\-f\fR, \fB\-\-force\fR
+.nf
+make\-labels \-\-force
+.fi
+.TP
+\fB\-o\fR, \fB\-\-out\fR
+.nf
+make\-labels \-\-out sheet.pdf
+.fi
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+.nf
+make\-labels \-\-help
+.fi
+.TP
+\fB\-\-man\fR
+.nf
+make\-labels \-\-man
+.fi
+.TP
+\fB\-\-completion\fR \fISHELL\fR
+.nf
+make\-labels \-\-completion zsh
+.fi
+
+.SH SHELL COMPLETION
+The completion script comes from Click.
+.br
+It completes switch names, \fB\-\-layout\fR values, colour
+names, and file paths for pictures.
+
+For the current terminal:
+
+.nf
+eval "$(make\-labels \-\-completion zsh)"
+.fi
+
+To keep it in zsh, save the script where \fBcompinit\fR looks:
+
+.nf
+mkdir \-p ~/.zfunc
+make\-labels \-\-completion zsh > ~/.zfunc/_make\-labels
+.fi
+
+Add this to \fB~/.zshrc\fR if tab does nothing, then open a new
+terminal:
+
+.nf
+fpath=(~/.zfunc $fpath)
+autoload \-Uz compinit && compinit
+.fi
+
+Bash:
+
+.nf
+make\-labels \-\-completion bash > ~/.make\-labels\-complete.bash
+.fi
+
+Add this line to \fB~/.bashrc\fR, then open a new terminal:
+
+.nf
+source ~/.make\-labels\-complete.bash
+.fi
+
+Fish:
+
+.nf
+mkdir \-p ~/.config/fish/completions
+make\-labels \-\-completion fish > ~/.config/fish/completions/make\-labels.fish
+.fi
+
+.SH FROM PYTHON
+\fBrender_pdf\fR returns the PDF bytes.
+.br
+A future UI can call the same function.
+
+.nf
+from labels import SheetSpec, TextSticker, render_pdf
+
+pdf = render_pdf(SheetSpec(
+    stickers=(
+        TextSticker("MASTER\enSAW", (0.00, 0.55, 0.22)),
+        TextSticker("SLAVE\enVAC", (0.82, 0.08, 0.10)),
+    ),
+))
+.fi
+
+A plain dict with the old names (\fBpage_w\fR, \fBcols\fR,
+\fBlw\fR, \fBtext\fR, \fBcolor\fR, \fBcell\fR) still works.
+
+.SH LICENSE
+Copyright © 2026 Ori Ben-Hur.
+.br
+This project is available under the MIT License (LICENSE).
+.br
+You may use, modify, and distribute it, but copies or
+substantial portions must keep the copyright and license notice.
