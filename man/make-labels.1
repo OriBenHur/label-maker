@@ -412,7 +412,7 @@ Words for one sticker.
 Repeat it for the next sticker.
 .br
 A real line break inside \fB'''\fR or \fB"""\fR, or the two
-characters \fBn\fR, starts a new line.
+characters \fB\en\fR, starts a new line.
 .br
 With no stickers chosen, the sheet alternates those two words,
 green then red.
@@ -608,127 +608,149 @@ Print a shell completion script and exit.
 .TP
 \fB\-W\fR, \fB\-\-page\-w\fR
 .nf
-make\-labels \-\-page\-w 210
+make\-labels \-\-page\-w 210 \-\-page\-h 70 \-\-cols 3 \-\-rows 1 \-\-lw 60 \-\-lh 36
+\-\-gap\-x 6 \-\-margin\-y 17 \-\-proof \-\-text '210 mm'
 .fi
 .TP
 \fB\-H\fR, \fB\-\-page\-h\fR
 .nf
-make\-labels \-\-page\-h 297
+make\-labels \-\-page\-w 70 \-\-page\-h 297 \-\-cols 1 \-\-rows 6 \-\-lw 50 \-\-lh 32
+\-\-gap\-y 8 \-\-proof \-\-text '297 mm'
 .fi
 .TP
 \fB\-c\fR, \fB\-\-cols\fR
 .nf
-make\-labels \-\-cols 3
+make\-labels \-\-page\-w 200 \-\-page\-h 70 \-\-cols 4 \-\-rows 1 \-\-lw 40 \-\-lh 36
+\-\-gap\-x 6 \-\-margin\-y 17 \-\-text 1 \-\-text 2 \-\-text 3 \-\-text 4 \-\-color green
+\-\-color red \-\-color blue \-\-color purple
 .fi
 .TP
 \fB\-r\fR, \fB\-\-rows\fR
 .nf
-make\-labels \-\-rows 8
+make\-labels \-\-page\-w 70 \-\-page\-h 280 \-\-cols 1 \-\-rows 6 \-\-lw 50 \-\-lh 30
+\-\-gap\-y 8 \-\-text 1 \-\-text 2 \-\-text 3 \-\-text 4 \-\-text 5 \-\-text 6
 .fi
 .TP
 \fB\-w\fR, \fB\-\-lw\fR
 .nf
-make\-labels \-\-lw 63.5
+make\-labels \-\-page\-w 180 \-\-page\-h 150 \-\-cols 1 \-\-rows 1 \-\-lw 150 \-\-lh 36
+\-\-margin\-y 57 \-\-proof \-\-text '150 mm wide'
 .fi
 .TP
 \fB\-t\fR, \fB\-\-lh\fR
 .nf
-make\-labels \-\-lh 33.9
+make\-labels \-\-page\-w 130 \-\-page\-h 180 \-\-cols 1 \-\-rows 1 \-\-lw 50 \-\-lh 130
+\-\-proof \-\-text '130 mm'
 .fi
 .TP
 \fB\-g\fR, \fB\-\-gap\-x\fR
 .nf
-make\-labels \-\-gap\-x 2.5
+make\-labels \-\-page\-w 210 \-\-page\-h 150 \-\-cols 3 \-\-rows 1 \-\-lw 40 \-\-lh 40
+\-\-gap\-x 30 \-\-margin\-y 55 \-\-proof \-\-text GAP
 .fi
 .TP
 \fB\-G\fR, \fB\-\-gap\-y\fR
 .nf
-make\-labels \-\-gap\-y 0
+make\-labels \-\-page\-w 120 \-\-page\-h 250 \-\-cols 1 \-\-rows 3 \-\-lw 50 \-\-lh 30
+\-\-gap\-y 40 \-\-proof \-\-text GAP
 .fi
 .TP
 \fB\-m\fR, \fB\-\-margin\-x\fR
 .nf
-make\-labels \-\-margin\-x 5
+make\-labels \-\-page\-w 210 \-\-page\-h 150 \-\-cols 2 \-\-rows 1 \-\-lw 35 \-\-lh 35
+\-\-gap\-x 4 \-\-margin\-x 115 \-\-font\-mm 5 \-\-text MARGIN \-\-proof
 .fi
 .TP
 \fB\-M\fR, \fB\-\-margin\-y\fR
 .nf
-make\-labels \-\-margin\-y 5
+make\-labels \-\-page\-w 130 \-\-page\-h 220 \-\-cols 2 \-\-rows 2 \-\-lw 40 \-\-lh 30
+\-\-margin\-y 110 \-\-proof \-\-text MARGIN
 .fi
 .TP
 \fB\-x\fR, \fB\-\-offset\-x\fR
 .nf
-make\-labels \-\-offset\-x 1
+make\-labels \-\-page\-w 180 \-\-page\-h 150 \-\-cols 2 \-\-rows 1 \-\-lw 40 \-\-lh 40
+\-\-margin\-x 8 \-\-margin\-y 55 \-\-offset\-x 55 \-\-proof \-\-text SHIFT
 .fi
 .TP
 \fB\-y\fR, \fB\-\-offset\-y\fR
 .nf
-make\-labels \-\-offset\-y 10
+make\-labels \-\-page\-w 130 \-\-page\-h 220 \-\-cols 2 \-\-rows 2 \-\-lw 40 \-\-lh 30
+\-\-margin\-y 8 \-\-offset\-y 80 \-\-proof \-\-text SHIFT
 .fi
 .TP
 \fB\-T\fR, \fB\-\-text\fR
 .nf
-make\-labels \-\-text 'MASTERnSAW' \-\-text 'SLAVEnVAC'
+make\-labels \-\-text 'MASTER\enSAW' \-\-text 'SLAVE\enVAC' \-\-color green
+\-\-color red
 .fi
 .TP
 \fB\-I\fR, \fB\-\-image\fR
 .nf
-make\-labels \-\-image logo.svg
+make\-labels \-\-image assets/fan.svg \-\-image assets/Logo_ICQ.svg
 .fi
 .TP
 \fB\-\-trace\fR
 .nf
-make\-labels \-\-image logo.png \-\-trace
+make\-labels \-\-page\-w 90 \-\-page\-h 90 \-\-cols 1 \-\-rows 1 \-\-lw 70 \-\-lh 70
+\-\-image assets/logo.png \-\-trace
 .fi
 .TP
 \fB\-\-combo\fR \fISPEC\fR
 .nf
-make\-labels \-\-combo 'logo.svg|MASTER|mark.png|blue'
+make\-labels \-\-page\-w 130 \-\-page\-h 150 \-\-cols 2 \-\-rows 2 \-\-lw 58 \-\-lh 58
+\-\-combo 'assets/fan.svg|LEFT' \-\-combo 'assets/fan.svg|RIGHT|right'
+\-\-combo 'assets/fan.svg|TOP|top'
+\-\-combo 'assets/fan.svg|BOTH|assets/Logo_ICQ.svg'
 .fi
 .TP
 \fB\-\-layout\fR \fICHOICE\fR
 .nf
-make\-labels \-\-combo logo.svg MASTER \-\-layout top
+make\-labels \-\-page\-w 110 \-\-page\-h 160 \-\-cols 1 \-\-rows 2 \-\-lw 90 \-\-lh 60
+\-\-combo assets/fan.svg FIRST \-\-combo assets/Logo_ICQ.svg SECOND \-\-layout top
 .fi
 .TP
 \fB\-C\fR, \fB\-\-color\fR
 .nf
-make\-labels \-\-text MASTER \-\-color green
+make\-labels \-\-text GREEN \-\-color green \-\-text RED \-\-color red \-\-text BLUE
+\-\-color blue \-\-text YELLOW \-\-color yellow \-\-text ORANGE \-\-color orange
+\-\-text PURPLE \-\-color purple \-\-text BLACK \-\-color black \-\-text BROWN
+\-\-color brown
 .fi
 .TP
 \fB\-e\fR, \fB\-\-cell\fR
 .nf
-make\-labels \-\-cell '1,1,@logo.svg|MASTER|top|blue'
+make\-labels \-\-proof \-\-cell '2,2,@assets/fan.svg|HERE|top,blue'
 .fi
 .TP
 \fB\-F\fR, \fB\-\-font\-mm\fR
 .nf
-make\-labels \-\-font\-mm 8
+make\-labels \-\-proof \-\-font\-mm 8 \-\-text '8 mm'
 .fi
 .TP
 \fB\-R\fR, \fB\-\-rotate\fR
 .nf
-make\-labels \-\-text MASTER \-\-rotate
+make\-labels \-\-text UPWARD \-\-rotate \-\-color blue
 .fi
 .TP
 \fB\-n\fR, \fB\-\-limit\fR
 .nf
-make\-labels \-\-limit 4
+make\-labels \-\-proof \-\-limit 3 \-\-text ONE \-\-text TWO \-\-text THREE
 .fi
 .TP
 \fB\-L\fR, \fB\-\-row\fR
 .nf
-make\-labels \-\-row 2
+make\-labels \-\-proof \-\-row 3 \-\-text 'ROW 3' \-\-color blue
 .fi
 .TP
 \fB\-S\fR, \fB\-\-skip\-row\fR
 .nf
-make\-labels \-\-skip\-row 3
+make\-labels \-\-proof \-\-skip\-row 2 \-\-skip\-row 4 \-\-text KEPT
 .fi
 .TP
 \fB\-s\fR, \fB\-\-skip\-col\fR
 .nf
-make\-labels \-\-skip\-col 1
+make\-labels \-\-proof \-\-skip\-col 1 \-\-text RIGHT \-\-color red
 .fi
 .TP
 \fB\-b\fR, \fB\-\-outline\fR
@@ -738,17 +760,19 @@ make\-labels \-\-outline
 .TP
 \fB\-p\fR, \fB\-\-proof\fR
 .nf
-make\-labels \-\-proof
+make\-labels \-\-proof \-\-text 'MASTER\enSAW' \-\-text 'SLAVE\enVAC' \-\-color green
+\-\-color red
 .fi
 .TP
 \fB\-f\fR, \fB\-\-force\fR
 .nf
-make\-labels \-\-force
+make\-labels \-\-page\-w 110 \-\-page\-h 150 \-\-cols 3 \-\-rows 1 \-\-lw 50 \-\-lh 40
+\-\-gap\-x 8 \-\-margin\-y 55 \-\-text CUT \-\-proof \-\-force
 .fi
 .TP
 \fB\-o\fR, \fB\-\-out\fR
 .nf
-make\-labels \-\-out sheet.pdf
+make\-labels \-\-text SHEET \-\-color blue
 .fi
 .TP
 \fB\-h\fR, \fB\-\-help\fR

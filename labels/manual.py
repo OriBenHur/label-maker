@@ -130,6 +130,8 @@ def _cells(line: str) -> list[str]:
     escaped = False
     for char in body:
         if escaped:
+            if char != "|":
+                current.append("\\")
             current.append(char)
             escaped = False
             continue
@@ -174,11 +176,39 @@ def _broken(text: str) -> list[str]:
 def _example_block(text: str) -> list[str]:
     parts = []
     for part in re.split(r"\s*<br>\s*", text):
-        part = part.strip()
+        part = part.strip().strip("`").rstrip("\\").strip()
         if not part or _LOCAL_EXAMPLE in part:
             continue
-        parts.append(_code_line(part.strip("`")))
-    return [".nf", *parts, ".fi"]
+        parts.append(part)
+    command = " ".join(parts)
+    return [".nf", *(_code_line(line) for line in _wrap_command(command)), ".fi"]
+
+
+def _wrap_command(command: str, width: int = 76) -> list[str]:
+    tokens = re.findall(r"'[^']*'|\"[^\"]*\"|\S+", command)
+    groups: list[str] = []
+    index = 0
+    while index < len(tokens):
+        token = tokens[index]
+        nxt = tokens[index + 1] if index + 1 < len(tokens) else ""
+        if token.startswith("-") and nxt and not nxt.startswith("-"):
+            groups.append(f"{token} {nxt}")
+            index += 2
+        else:
+            groups.append(token)
+            index += 1
+    lines: list[str] = []
+    current = ""
+    for group in groups:
+        trial = group if not current else f"{current} {group}"
+        if current and len(trial) > width:
+            lines.append(current)
+            current = group
+        else:
+            current = trial
+    if current:
+        lines.append(current)
+    return lines
 
 
 def _switch_text(row: list[str]) -> str:

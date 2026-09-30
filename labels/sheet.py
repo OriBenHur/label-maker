@@ -94,10 +94,11 @@ class LabelSheet:
                     - layout.label_height
                     - spec.offset_y_mm * MM
                 )
+                scale = ""
                 if grid:
                     content += self._grid_cell(x, y)
                     if (row, column) in scales:
-                        content += self._sticker_scale(row, column, x, y)
+                        scale = self._sticker_scale(row, column, x, y)
                 selected_row = spec.row is None or row + 1 == spec.row
                 skipped = (
                     row + 1 in spec.skip_rows
@@ -114,6 +115,7 @@ class LabelSheet:
                     else:
                         sticker = stickers[index % len(stickers)]
                     content += self._place(sticker, x, y, font_size)
+                content += scale
                 index += 1
         return content
 
@@ -463,15 +465,17 @@ class LabelSheet:
         rows = self.spec.rows
         cols = self.spec.columns
         content = "q 0 G 0.4 w\n"
-        if rows == 1:
+        near_page_top = self.layout.page_height - (y + height) <= 8 * MM
+        if rows == 1 and near_page_top:
             content += self._ticks(x, y + height - 5 * MM, width, True, -1)
-        elif row == 0:
+        elif row == 0 and rows > 1:
             content += self._ticks(x, y, width, True, 1)
         else:
             content += self._ticks(x, y + height, width, True, -1)
-        if cols == 1:
+        near_page_left = x <= 8 * MM
+        if cols == 1 and near_page_left:
             content += self._ticks(x + 5 * MM, y, height, False, 1)
-        elif column == 0:
+        elif column == 0 and cols > 1:
             content += self._ticks(x + width, y, height, False, -1)
         else:
             content += self._ticks(x, y, height, False, 1)
@@ -535,28 +539,105 @@ class LabelSheet:
             f"{x + width:.2f} {y + height / 2:.2f} l S Q\n"
         )
 
+    def _boxes(self) -> list[tuple[float, float, float, float]]:
+        spec = self.spec
+        layout = self.layout
+        boxes = []
+        for row in range(spec.rows):
+            for column in range(spec.columns):
+                x = (
+                    layout.margin_x
+                    + column * (layout.label_width + layout.gap_x)
+                    + spec.offset_x_mm * MM
+                )
+                y = (
+                    layout.page_height
+                    - layout.margin_y
+                    - row * (layout.label_height + layout.gap_y)
+                    - layout.label_height
+                    - spec.offset_y_mm * MM
+                )
+                boxes.append((x, y, layout.label_width, layout.label_height))
+        return boxes
+
+    def _hits(self, x0: float, y0: float, x1: float, y1: float) -> bool:
+        for left, bottom, width, height in self._boxes():
+            right = left + width
+            top = bottom + height
+            if x1 < left or x0 > right or y1 < bottom or y0 > top:
+                continue
+            return True
+        return False
+
     def _ruler(self) -> str:
         page_width = self.layout.page_width
         page_height = self.layout.page_height
         content = "q 0 G 0.8 w\n"
-        x0, y0 = 5 * MM, page_height / 2
-        content += f"{x0:.2f} {y0:.2f} m {x0 + 100 * MM:.2f} {y0:.2f} l S\n"
-        for index in range(11):
-            x = x0 + index * 10 * MM
-            height = 4 * MM if index % 5 == 0 else 2 * MM
-            content += f"{x:.2f} {y0:.2f} m {x:.2f} {y0 + height:.2f} l S\n"
-        content += (
-            f"0 0 0 rg BT /F1 7 Tf 1 0 0 1 "
-            f"{x0 + 34 * MM:.2f} {y0 + 6 * MM:.2f} Tm (100 mm) Tj ET\n"
-        )
-        x1, y1 = page_width / 2, 25 * MM
-        content += f"{x1:.2f} {y1:.2f} m {x1:.2f} {y1 + 100 * MM:.2f} l S\n"
-        for index in range(11):
-            y = y1 + index * 10 * MM
-            width = 4 * MM if index % 5 == 0 else 2 * MM
-            content += f"{x1:.2f} {y:.2f} m {x1 + width:.2f} {y:.2f} l S\n"
-        content += (
-            f"BT /F1 7 Tf 0 1 -1 0 {x1 - 2 * MM:.2f} "
-            f"{y1 + 34 * MM:.2f} Tm (100 mm) Tj ET Q\n"
-        )
+        y0 = self._horizontal_ruler_y()
+        x1 = self._vertical_ruler_x()
+        if y0 is not None:
+            x0 = 5 * MM
+            content += f"{x0:.2f} {y0:.2f} m {x0 + 100 * MM:.2f} {y0:.2f} l S\n"
+            for index in range(11):
+                x = x0 + index * 10 * MM
+                height = 4 * MM if index % 5 == 0 else 2 * MM
+                content += f"{x:.2f} {y0:.2f} m {x:.2f} {y0 + height:.2f} l S\n"
+            content += (
+                f"0 0 0 rg BT /F1 7 Tf 1 0 0 1 "
+                f"{x0 + 34 * MM:.2f} {y0 + 6 * MM:.2f} Tm (100 mm) Tj ET\n"
+            )
+        if x1 is not None:
+            y1 = 25 * MM
+            content += f"{x1:.2f} {y1:.2f} m {x1:.2f} {y1 + 100 * MM:.2f} l S\n"
+            for index in range(11):
+                y = y1 + index * 10 * MM
+                width = 4 * MM if index % 5 == 0 else 2 * MM
+                content += f"{x1:.2f} {y:.2f} m {x1 + width:.2f} {y:.2f} l S\n"
+            content += (
+                f"BT /F1 7 Tf 0 1 -1 0 {x1 - 2 * MM:.2f} "
+                f"{y1 + 34 * MM:.2f} Tm (100 mm) Tj ET Q\n"
+            )
+        else:
+            content += "Q\n"
         return content
+
+    def _horizontal_ruler_y(self) -> float | None:
+        page_width = self.layout.page_width
+        page_height = self.layout.page_height
+        if page_width < 105 * MM:
+            return None
+        x0, x1 = 5 * MM, 105 * MM
+        if not self._hits(x0, page_height / 2, x1, page_height / 2):
+            return page_height / 2
+        boxes = self._boxes()
+        if not boxes:
+            return page_height / 2
+        candidates = [min(box[1] for box in boxes) - 10 * MM]
+        candidates.append(max(box[1] + box[3] for box in boxes) + 2 * MM)
+        for y in candidates:
+            label_top = y + 9 * MM
+            fits = 2 * MM <= y and label_top <= page_height
+            clear = not self._hits(x0, y, x1, label_top)
+            if fits and clear:
+                return y
+        return None
+
+    def _vertical_ruler_x(self) -> float | None:
+        page_width = self.layout.page_width
+        page_height = self.layout.page_height
+        if page_height < 125 * MM:
+            return None
+        y0, y1 = 25 * MM, 125 * MM
+        center = page_width / 2
+        if not self._hits(center, y0, center, y1):
+            return center
+        boxes = self._boxes()
+        if not boxes:
+            return center
+        left = min(box[0] for box in boxes)
+        if left >= 9 * MM:
+            return left - 5 * MM
+        right = max(box[0] + box[2] for box in boxes)
+        if page_width - right >= 9 * MM:
+            return page_width - 6 * MM
+        return None
